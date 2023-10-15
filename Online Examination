@@ -1,0 +1,92 @@
+package test;
+
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class QuizApp {
+    private static int score = 0;
+    private static int questionIndex = 0;
+    private static Timer timer;
+
+    private static String[] questions = {
+        "What is the capital of France?",
+        "Which planet is known as the Red Planet?",
+        "Who wrote the play 'Romeo and Juliet'?",
+    };
+
+    private static String[] options = {
+        "A) Paris B) London C) Madrid D) Berlin",
+        "A) Earth B) Mars C) Venus D) Jupiter",
+        "A) Charles Dickens B) William Shakespeare C) Mark Twain D) Jane Austen",
+    };
+
+    private static int[] answers = {0, 1, 1}; // Indices of correct answers
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to the Quiz App!");
+        System.out.print("Enter your name: ");
+        String playerName = scanner.nextLine();
+
+        System.out.println("Hello, " + playerName + "!");
+        System.out.println("You have 10 seconds to answer each question. Let's start!\n");
+
+        timer = new Timer();
+        timer.schedule(new QuizTimer(), 0, 10000); // Timer for 10 seconds
+
+        while (questionIndex < questions.length) {
+            System.out.println(questions[questionIndex]);
+            System.out.println(options[questionIndex]);
+            System.out.print("Your choice (A, B, C, D): ");
+            String userChoice = scanner.nextLine();
+
+            int userAnswer = getAnswerIndex(userChoice);
+
+            if (userAnswer == answers[questionIndex]) {
+                System.out.println("Correct!\n");
+                score++;
+            } else {
+                System.out.println("Incorrect!\n");
+            }
+
+            questionIndex++;
+        }
+
+        timer.cancel();
+
+        System.out.println("Quiz completed!");
+        System.out.println("Your score: " + score + " out of " + questions.length);
+    }
+
+    private static int getAnswerIndex(String userChoice) {
+        switch (userChoice.toUpperCase()) {
+            case "A":
+                return 0;
+            case "B":
+                return 1;
+            case "C":
+                return 2;
+            case "D":
+                return 3;
+            default:
+                return -1;
+        }
+    }
+
+    static class QuizTimer extends TimerTask {
+        @Override
+        public void run() {
+            System.out.println("\nTime's up for this question!");
+            questionIndex++;
+            if (questionIndex < questions.length) {
+                System.out.println(questions[questionIndex]);
+                System.out.println(options[questionIndex]);
+                System.out.print("Your choice (A, B, C, D): ");
+            } else {
+                timer.cancel();
+            }
+        }
+    }
+}
